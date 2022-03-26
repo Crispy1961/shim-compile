@@ -1,0 +1,24 @@
+name: Build Remote Repository
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: Checkout remote repository
+      uses: actions/checkout@v3
+      with:
+        repository: kiennq/scoop-better-shimexe
+
+    - name: Build
+      shell: cmd
+      run: |
+        call "%PROGRAMFILES(X86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsamd64_x86.bat"
+        cl.exe /nologo /std:c++17 /DNDEBUG /MT /O2 /GF /GR- /GL shim.cpp
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: shim
+        path: shim.exe
